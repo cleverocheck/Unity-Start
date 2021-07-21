@@ -9,10 +9,10 @@ public class DecayCubes : MonoBehaviour
         {
             for (int i = collision.transform.childCount - 1; i >= 0; i--)
             {
-                Debug.Log(i);
                 Transform child = collision.transform.GetChild(i);
                 child.gameObject.AddComponent<Rigidbody>();
-                child.gameObject.GetComponent<Rigidbody>().AddExplosionForce(70f, Vector3.up, 5f);
+                child.gameObject.GetComponent<Rigidbody>().AddExplosionForce(100f, Vector3.up, 5f);
+                child.gameObject.GetComponent<Rigidbody>().AddExplosionForce(100f, Vector3.down, 5f);
                 child.SetParent(null);
             }
             Destroy(collision.gameObject);
