@@ -2,11 +2,10 @@ using UnityEngine;
 
 public class RotateCamera : MonoBehaviour {
     public float speed = 5f;
-    private Transform _rotator;
-    private void Start() {
-        _rotator = GetComponent<Transform>();
-    }
+    public GameObject controller;
     private void Update() {
-        _rotator.Rotate(0, speed * Time.deltaTime, 0);
+        if (!controller.GetComponent<Controller>().game_over) {
+            GetComponent<Transform>().Rotate(0, speed * Time.deltaTime, 0);
+        }
     }
 }
