@@ -1,6 +1,7 @@
 using UnityEngine;
 
 public class DecayCubes : MonoBehaviour {
+    public float camera_speed = 7;
     public GameObject restart_button;
     public GameObject controller;
     private bool collisition_active;
@@ -20,7 +21,7 @@ public class DecayCubes : MonoBehaviour {
     }
     private void Update() {
         if (controller.GetComponent<Controller>().game_over && !collisition_active) {
-            Camera.main.transform.Translate(Vector3.forward * -7 * Time.deltaTime);
+            Camera.main.transform.Translate(Vector3.forward * -camera_speed * Time.deltaTime);
         }
     }
 }

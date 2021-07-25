@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public class RotateCamera : MonoBehaviour {
-    public float speed = 5f;
+    public float speed = 5;
     public GameObject controller;
     private void Update() {
         if (!controller.GetComponent<Controller>().game_over) {

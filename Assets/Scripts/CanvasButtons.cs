@@ -6,6 +6,6 @@ public class CanvasButtons : MonoBehaviour {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     public void open_social() {
-        Application.OpenURL("https://www.youtube.com");
+        Application.OpenURL("https://www.instagram.com/");
     }
 }
