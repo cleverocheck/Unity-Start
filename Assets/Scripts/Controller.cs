@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.EventSystems;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,7 +8,9 @@ public class Controller : MonoBehaviour {
     public float change_speed = 0.5f;
     public GameObject placeholder;
     public GameObject cube_create, cubes;
+    public GameObject[] start_page;
     public bool game_over = false;
+    private bool game_start = false;
     private CubePosition current_cube = new CubePosition(0, 1, 0);
     private Coroutine placeholder_tick;
 
@@ -29,10 +32,14 @@ public class Controller : MonoBehaviour {
     }
     private void Update() {
         if (placeholder != null) {
-            if ((Input.GetMouseButtonDown(0) || Input.touchCount > 0)) {
+            if ((Input.GetMouseButtonDown(0) || Input.touchCount > 0) && (game_start || EventSystem.current.IsPointerOverGameObject() && EventSystem.current.currentSelectedGameObject == null)) {
 #if !UNITY_EDITOR
                  if(Input.GetTouch(0).phase != TouchPhase.Began) return;
 #endif
+                if (!game_start) {
+                    game_start = true;
+                    foreach (GameObject UI in start_page) UI.SetActive(false);
+                }
                 GameObject new_cube = Instantiate(cube_create, placeholder.transform.position, Quaternion.identity) as GameObject;
                 new_cube.transform.SetParent(cubes.transform);
                 current_cube.set_vector(placeholder.transform.position);
