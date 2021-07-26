@@ -29,12 +29,14 @@ public class Controller : MonoBehaviour {
 
     private class MaxPosition {
         private int max_x, max_y, max_z;
+        public int max_hor;
         public int MaxX {
             get {
                 return max_x;
             }
             set {
                 if (Math.Abs(value) > max_x) max_x = value;
+                if (Math.Abs(value) > max_hor) max_hor = value;
             }
         }
         public int MaxY {
@@ -50,7 +52,8 @@ public class Controller : MonoBehaviour {
                 return max_z;
             }
             set {
-                if (Math.Abs(value) > max_z) max_z = value;
+                if (Math.Abs(value) > max_z) max_x = value;
+                if (Math.Abs(value) > Math.Abs(MaxX) && Math.Abs(value) > max_hor) max_hor = value;
             }
         }
         public MaxPosition(int default_x, int default_y, int default_z) {
@@ -58,20 +61,18 @@ public class Controller : MonoBehaviour {
             MaxY = default_y;
             MaxZ = default_z;
         }
-        internal void Deconstruct(out int max_x, out int max_y, out int max_z) {
-            max_x = this.MaxX;
-            max_y = this.MaxY;
-            max_z = this.MaxZ;
-        }
     }
 
     public float change_speed = 0.5f;
     public float camera_speed = 2;
-    public GameObject placeholder;
-    public GameObject cube_create, cubes;
+    public float camera_step = 2.5f;
+    public float camera_fate_speed = 1.5f;
+    public Color[] colors;
+    public GameObject placeholder, cube_create, cubes;
     public GameObject[] start_page;
     public bool game_over = false;
     private bool game_start = false;
+    private Color current_color;
     private CubePosition current_cube = new CubePosition(0, 1, 0);
     private Coroutine placeholder_tick;
     private List<Vector3> cubes_positions = new List<Vector3> {
@@ -86,16 +87,27 @@ public class Controller : MonoBehaviour {
         new Vector3(-1, 0, 1),
         new Vector3(1, 0, -1)
     };
-    float camera_default_y;
-    float camera_move_y;
+    private float camera_default_y;
+    private float camera_move_y;
+    private float camera_move_z;
+    private int old_max_hor;
     private void Start() {
         placeholder_tick = StartCoroutine(show_cube_placeholder());
         camera_default_y = Camera.main.transform.localPosition.y;
         camera_move_y = camera_default_y + current_cube.y - 1;
+        camera_move_z = Camera.main.transform.localPosition.z;
+        current_color = Camera.main.backgroundColor;
+    }
+    private bool IsPointerOverUIObject() {
+        PointerEventData current_position = new PointerEventData(EventSystem.current);
+        current_position.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+        List<RaycastResult> results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(current_position, results);
+        return results.Count > 0;
     }
     private void Update() {
         if (placeholder != null) {
-            if ((Input.GetMouseButtonDown(0) || Input.touchCount > 0) && (!EventSystem.current.IsPointerOverGameObject() || EventSystem.current.currentSelectedGameObject == null)) {
+            if ((Input.GetMouseButtonDown(0) || Input.touchCount > 0) && (!IsPointerOverUIObject() || EventSystem.current.currentSelectedGameObject == null)) {
 #if !UNITY_EDITOR
                  if(Input.GetTouch(0).phase != TouchPhase.Began) return;
 #endif
@@ -116,7 +128,11 @@ public class Controller : MonoBehaviour {
                 StopCoroutine(placeholder_tick);
             }
         }
-        Camera.main.transform.localPosition = Vector3.MoveTowards(Camera.main.transform.localPosition, new Vector3(Camera.main.transform.localPosition.x, camera_move_y, Camera.main.transform.localPosition.z), camera_speed * Time.deltaTime);
+        if (!game_over) {
+            Camera.main.transform.localPosition = Vector3.MoveTowards(Camera.main.transform.localPosition, new Vector3(Camera.main.transform.localPosition.x, camera_move_y, Camera.main.transform.localPosition.z), camera_speed * Time.deltaTime);
+            Camera.main.transform.localPosition = Vector3.MoveTowards(Camera.main.transform.localPosition, new Vector3(Camera.main.transform.localPosition.x, Camera.main.transform.localPosition.y, camera_move_z), camera_speed * Time.deltaTime);
+            if (Camera.main.backgroundColor != current_color) Camera.main.backgroundColor = Color.Lerp(Camera.main.backgroundColor, current_color, Time.deltaTime / camera_fate_speed);
+        }
     }
     IEnumerator show_cube_placeholder() {
         while (true) {
@@ -134,8 +150,11 @@ public class Controller : MonoBehaviour {
         if (is_position_empty(new Vector3(current_cube.x, current_cube.y, current_cube.z - 1))) positions.Add(new Vector3(current_cube.x, current_cube.y, current_cube.z - 1));
 
         int current_position = UnityEngine.Random.Range(0, positions.Count);
-        if (placeholder.transform.position != positions[current_position]) placeholder.transform.position = positions[current_position];
-        else spawn_placeholder();
+        if (positions.Count > 1) {
+            if (placeholder.transform.position != positions[current_position]) placeholder.transform.position = positions[current_position];
+            else spawn_placeholder();
+        } else if (positions.Count == 0) game_over = true;
+        else placeholder.transform.position = positions[0];
     }
     private bool is_position_empty(Vector3 targetPos) {
         if (targetPos.y <= 0) return false;
@@ -145,12 +164,20 @@ public class Controller : MonoBehaviour {
         return true;
     }
     private void camera_tick() {
-        (int x, int y, int z) = new MaxPosition(0, 0, 0);
+        MaxPosition max = new MaxPosition(0, 0, 0);
         foreach (Vector3 cube_position in cubes_positions) {
-            x = Convert.ToInt32(cube_position.x);
-            y = Convert.ToInt32(cube_position.y);
-            z = Convert.ToInt32(cube_position.z);
+            max.MaxX = Convert.ToInt32(cube_position.x);
+            max.MaxY = Convert.ToInt32(cube_position.y);
+            max.MaxZ = Convert.ToInt32(cube_position.z);
         }
         camera_move_y = camera_default_y + current_cube.y - 1;
+        if (max.max_hor % 3 == 0 && old_max_hor != max.max_hor) {
+            camera_move_z = (Camera.main.transform.localPosition - new Vector3(0, 0, camera_step)).z;
+            old_max_hor = max.max_hor;
+        }
+
+        if (max.MaxY % 4 == 0) current_color = colors[2];
+        else if (max.MaxY % 3 == 0) current_color = colors[1];
+        else current_color = colors[0];
     }
 }
