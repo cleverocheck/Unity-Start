@@ -2,8 +2,7 @@ using UnityEngine;
 
 public class DecayCubes : MonoBehaviour {
     public float camera_speed = 7;
-    public GameObject restart_button;
-    public GameObject controller;
+    public GameObject restart_button, controller, explosion;
     private bool collisition_active;
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.tag == "Cube" && !collisition_active) {
@@ -17,6 +16,10 @@ public class DecayCubes : MonoBehaviour {
             restart_button.SetActive(true);
             Destroy(collision.gameObject);
             collisition_active = true;
+            Camera.main.gameObject.AddComponent<CameraShake>();
+            GameObject vfx = Instantiate(explosion, new Vector3(collision.contacts[0].point.x, collision.contacts[0].point.y, collision.contacts[0].point.z), Quaternion.identity) as GameObject;
+            Destroy(vfx, 1.5f);
+            if (PlayerPrefs.GetInt("music") != 0) GetComponent<AudioSource>().Play();
         }
     }
     private void Update() {

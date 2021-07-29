@@ -68,7 +68,7 @@ public class Controller : MonoBehaviour {
     public float camera_step = 2.5f;
     public float camera_fate_speed = 1.5f;
     public Color[] colors;
-    public GameObject placeholder, cube_create, cubes;
+    public GameObject placeholder, cube_create, cubes, vfx_cube;
     public GameObject[] start_page;
     public bool game_over = false;
     private bool game_start = false;
@@ -119,6 +119,9 @@ public class Controller : MonoBehaviour {
                 new_cube.transform.SetParent(cubes.transform);
                 current_cube.Vector = placeholder.transform.position;
                 cubes_positions.Add(current_cube.Vector);
+                GameObject vfx = Instantiate(vfx_cube, current_cube.Vector, Quaternion.identity) as GameObject;
+                Destroy(vfx, 1.5f);
+                if (PlayerPrefs.GetInt("music") != 0) GetComponent<AudioSource>().Play();
                 spawn_placeholder();
                 camera_tick();
             }
