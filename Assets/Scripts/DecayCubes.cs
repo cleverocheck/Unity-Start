@@ -18,8 +18,8 @@ public class DecayCubes : MonoBehaviour {
             collisition_active = true;
             Camera.main.gameObject.AddComponent<CameraShake>();
             GameObject vfx = Instantiate(explosion, new Vector3(collision.contacts[0].point.x, collision.contacts[0].point.y, collision.contacts[0].point.z), Quaternion.identity) as GameObject;
-            Destroy(vfx, 1.5f);
-            if (PlayerPrefs.GetInt("music") != 0) GetComponent<AudioSource>().Play();
+            Destroy(vfx, vfx.gameObject.GetComponent<ParticleSystem>().main.startLifetime.constant);
+            if (PlayerPrefs.GetInt("sound") != 0) GetComponent<AudioSource>().Play();
         }
     }
     private void Update() {

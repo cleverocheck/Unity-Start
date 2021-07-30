@@ -120,12 +120,12 @@ public class Controller : MonoBehaviour {
                 current_cube.Vector = placeholder.transform.position;
                 cubes_positions.Add(current_cube.Vector);
                 GameObject vfx = Instantiate(vfx_cube, current_cube.Vector, Quaternion.identity) as GameObject;
-                Destroy(vfx, 1.5f);
-                if (PlayerPrefs.GetInt("music") != 0) GetComponent<AudioSource>().Play();
+                Destroy(vfx, vfx.gameObject.GetComponent<ParticleSystem>().main.startLifetime.constant);
+                if (PlayerPrefs.GetInt("sound") != 0) GetComponent<AudioSource>().Play();
                 spawn_placeholder();
                 camera_tick();
             }
-            if (!game_over && cubes.GetComponent<Rigidbody>().velocity.magnitude > 0.1f) {
+            if (!game_over && cubes.GetComponent<Rigidbody>().velocity.magnitude > 0.2f) {
                 Destroy(placeholder);
                 game_over = true;
                 StopCoroutine(placeholder_tick);
