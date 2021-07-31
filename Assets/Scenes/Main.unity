@@ -789,7 +789,7 @@ GameObject:
   - component: {fileID: 808218989}
   - component: {fileID: 808218993}
   m_Layer: 5
-  m_Name: Music
+  m_Name: Sound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -874,7 +874,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 808218989}
         m_TargetAssemblyTypeName: CanvasButtons, Assembly-CSharp
-        m_MethodName: handle_music
+        m_MethodName: change_sound
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1708,6 +1708,7 @@ GameObject:
   - component: {fileID: 1415114223}
   - component: {fileID: 1415114225}
   - component: {fileID: 1415114224}
+  - component: {fileID: 1415114226}
   m_Layer: 0
   m_Name: GlobalController
   m_TagString: Untagged
@@ -1741,7 +1742,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2b2aee0875401ee8a975499ee6037840, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.15
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1838,6 +1839,25 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button_audio: {fileID: 8300000, guid: 2bdfdcaaa87f963d49c0dd3dfb123ad2, type: 3}
+--- !u!95 &1415114226
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1415114222}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 82bd0199dd2b2332485b32a9819ed172, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1528332791
 GameObject:
   m_ObjectHideFlags: 0
@@ -2221,7 +2241,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.7997027}
   m_AnchorMax: {x: 1, y: 0.9024054}
-  m_AnchoredPosition: {x: 0, y: -0.2999878}
+  m_AnchoredPosition: {x: 0, y: -0.30004883}
   m_SizeDelta: {x: 0, y: -1.5}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1764070850
@@ -2514,6 +2534,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   change_speed: 0.5
+  difficulty_factor: 0.001
   camera_speed: 2
   camera_step: 2.5
   camera_fate_speed: 1.5

@@ -63,10 +63,7 @@ public class Controller : MonoBehaviour {
         }
     }
 
-    public float change_speed = 0.5f;
-    public float camera_speed = 2;
-    public float camera_step = 2.5f;
-    public float camera_fate_speed = 1.5f;
+    public float change_speed = 0.5f, difficulty_factor = 0.001f, camera_speed = 2, camera_step = 2.5f, camera_fate_speed = 1.5f;
     public Color[] colors;
     public GameObject placeholder, cube_create, cubes, vfx_cube;
     public GameObject[] start_page;
@@ -121,6 +118,7 @@ public class Controller : MonoBehaviour {
                 cubes_positions.Add(current_cube.Vector);
                 GameObject vfx = Instantiate(vfx_cube, current_cube.Vector, Quaternion.identity) as GameObject;
                 Destroy(vfx, vfx.gameObject.GetComponent<ParticleSystem>().main.startLifetime.constant);
+                change_speed -= change_speed * difficulty_factor;
                 if (PlayerPrefs.GetInt("sound") != 0) GetComponent<AudioSource>().Play();
                 spawn_placeholder();
                 camera_tick();
