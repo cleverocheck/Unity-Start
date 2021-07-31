@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class CanvasButtons : MonoBehaviour {
     public Sprite sound_on, sound_off;
     private GameObject global_controller;
@@ -28,6 +29,11 @@ public class CanvasButtons : MonoBehaviour {
     }
     public void open_store() {
         if (PlayerPrefs.GetInt("sound") != 0) GetComponent<AudioSource>().Play();
+        SceneManager.LoadScene("Store");
+    }
+    public void close_store() {
+        if (PlayerPrefs.GetInt("sound") != 0) GetComponent<AudioSource>().Play();
+        SceneManager.LoadScene("Main");
     }
     public void change_sound() {
         if (PlayerPrefs.GetInt("sound") == 0) {

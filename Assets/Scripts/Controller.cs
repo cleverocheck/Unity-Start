@@ -63,9 +63,13 @@ public class Controller : MonoBehaviour {
         }
     }
 
+    public GameObject record_ui, score_ui;
     public float change_speed = 0.5f, difficulty_factor = 0.001f, camera_speed = 2, camera_step = 2.5f, camera_fate_speed = 1.5f;
     public Color[] colors;
-    public GameObject placeholder, cube_create, cubes, vfx_cube;
+    public GameObject placeholder, cubes, vfx_cube;
+    public GameObject[] cubes_create;
+    // TODO: вместо такого подхода как в гайде лучше сделать централизованную системы цветов кубов и BEST достижения
+    public int[] cubes_price;
     public GameObject[] start_page;
     public bool game_over = false;
     private bool game_start = false;
@@ -94,6 +98,7 @@ public class Controller : MonoBehaviour {
         camera_move_y = camera_default_y + current_cube.y - 1;
         camera_move_z = Camera.main.transform.localPosition.z;
         current_color = Camera.main.backgroundColor;
+        record_ui.GetComponent<TMPro.TextMeshProUGUI>().text = "<color=#e06055><size=35>BEST: </size></color><u color=#e06055>" + PlayerPrefs.GetInt("record");
     }
     private bool IsPointerOverUIObject() {
         PointerEventData current_position = new PointerEventData(EventSystem.current);
@@ -112,7 +117,15 @@ public class Controller : MonoBehaviour {
                     game_start = true;
                     foreach (GameObject UI in start_page) UI.SetActive(false);
                 }
-                GameObject new_cube = Instantiate(cube_create, placeholder.transform.position, Quaternion.identity) as GameObject;
+                int max_cube = cubes_create.Length;
+                for (int i = 0; i < cubes_price.Length; i++) {
+                    if (PlayerPrefs.GetInt("record") + 1 < cubes_price[i]) {
+                        if (i == 0) max_cube = i + 1;
+                        else max_cube = i;
+                        break;
+                    }
+                }
+                GameObject new_cube = Instantiate(cubes_create[UnityEngine.Random.Range(0, max_cube)], placeholder.transform.position, Quaternion.identity) as GameObject;
                 new_cube.transform.SetParent(cubes.transform);
                 current_cube.Vector = placeholder.transform.position;
                 cubes_positions.Add(current_cube.Vector);
@@ -177,6 +190,9 @@ public class Controller : MonoBehaviour {
             old_max_hor = max.max_hor;
         }
 
+        if (PlayerPrefs.GetInt("record") < max.MaxY - 1) PlayerPrefs.SetInt("record", max.MaxY - 1);
+        record_ui.GetComponent<TMPro.TextMeshProUGUI>().text = "<color=#e06055><size=35>BEST: </size></color><u color=#e06055>" + PlayerPrefs.GetInt("record");
+        score_ui.GetComponent<TMPro.TextMeshProUGUI>().text = "<color=#e06055><size=35>NOW: </size></color><u color=#e06055>" + (max.MaxY - 1);
         if (max.MaxY % 4 == 0) current_color = colors[2];
         else if (max.MaxY % 3 == 0) current_color = colors[1];
         else current_color = colors[0];
