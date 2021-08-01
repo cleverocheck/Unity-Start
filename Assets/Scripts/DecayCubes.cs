@@ -1,9 +1,14 @@
 using UnityEngine;
 
 public class DecayCubes : MonoBehaviour {
-    public float camera_speed = 7;
-    public GameObject restart_button, controller, explosion;
+    [SerializeField] private float camera_speed = 7;
+    [SerializeField] private GameObject restart_button, explosion, controller;
     private bool collisition_active;
+    private void Update() {
+        if (controller.GetComponent<Controller>().game_over && !collisition_active) {
+            Camera.main.transform.Translate(Vector3.forward * -camera_speed * Time.deltaTime);
+        }
+    }
     private void OnCollisionEnter(Collision collision) {
         if (collision.gameObject.tag == "Cube" && !collisition_active) {
             for (int i = collision.transform.childCount - 1; i >= 0; i--) {
@@ -20,11 +25,6 @@ public class DecayCubes : MonoBehaviour {
             GameObject vfx = Instantiate(explosion, new Vector3(collision.contacts[0].point.x, collision.contacts[0].point.y, collision.contacts[0].point.z), Quaternion.identity) as GameObject;
             Destroy(vfx, vfx.gameObject.GetComponent<ParticleSystem>().main.startLifetime.constant);
             if (PlayerPrefs.GetInt("sound") != 0) GetComponent<AudioSource>().Play();
-        }
-    }
-    private void Update() {
-        if (controller.GetComponent<Controller>().game_over && !collisition_active) {
-            Camera.main.transform.Translate(Vector3.forward * -camera_speed * Time.deltaTime);
         }
     }
 }

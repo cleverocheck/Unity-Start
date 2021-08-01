@@ -1,8 +1,8 @@
 using UnityEngine;
 
 public class CameraShake : MonoBehaviour {
+    [SerializeField] private float shake_duraction = 1, factor = 1.2f;
     private Vector3 base_position;
-    public float shake_duraction = 1, factor = 1.2f;
     private void Start() {
         base_position = GetComponent<Transform>().localPosition;
     }

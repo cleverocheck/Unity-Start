@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 public class CanvasButtons : MonoBehaviour {
-    public Sprite sound_on, sound_off;
+    [SerializeField] private Sprite sound_on, sound_off;
     private GameObject global_controller;
     private void Start() {
         global_controller = GameObject.Find("GlobalController");
