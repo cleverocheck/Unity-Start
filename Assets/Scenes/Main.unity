@@ -1975,6 +1975,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button_audio: {fileID: 8300000, guid: 2bdfdcaaa87f963d49c0dd3dfb123ad2, type: 3}
+  cubes:
+  - {fileID: 4601721740053448210, guid: 4e134a7ed8d14a1259c1583d1775ef34, type: 3}
+  - {fileID: 9097647133261229898, guid: dc2a840cd0ddbbd3a91ebe59b575b6ed, type: 3}
+  - {fileID: 5302835032871583034, guid: 1ba1e3a3553fa6091843fb64bcc8c8af, type: 3}
+  - {fileID: 8228984469568148161, guid: 1be2cef90825ee9668197aa2419bf59c, type: 3}
+  - {fileID: 613001815798461349, guid: 0150964d607074b8fbbd621ef2d4366d, type: 3}
+  - {fileID: 4838634501960629626, guid: 7c9376f8e446d3128949d10c222eb932, type: 3}
+  - {fileID: 998121119993535774, guid: 4729c35a2d4aef25ba68a56bec44589d, type: 3}
+  - {fileID: 9135738803604648769, guid: 9360f0576e48f1ae19f454e09f5d27e8, type: 3}
+  - {fileID: 3432958427970102637, guid: 4873302f40103703ab86e6f972d7c6b8, type: 3}
+  - {fileID: 2032738628562444566, guid: a87fca1824200dcb1a03409819ed4ced, type: 3}
+  cubes_price: 000000000a000000140000001e00000028000000320000003c000000460000005000000064000000
 --- !u!95 &1415114226
 Animator:
   serializedVersion: 3
@@ -2040,8 +2052,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   camera_speed: 7
   restart_button: {fileID: 718446118}
-  controller: {fileID: 2089647805}
   explosion: {fileID: 110790, guid: 0f75f6db4a318f54382e0c98b2226db8, type: 3}
+  controller: {fileID: 2089647805}
 --- !u!82 &1528332794
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2805,6 +2817,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   record_ui: {fileID: 1772128778}
   score_ui: {fileID: 501169131}
+  placeholder: {fileID: 257560896}
+  cubes: {fileID: 1912352386}
+  vfx_cube: {fileID: 180128, guid: 6586ff0f14125534cae2f5d8f04b7871, type: 3}
   change_speed: 0.5
   difficulty_factor: 0.001
   camera_speed: 2
@@ -2814,26 +2829,12 @@ MonoBehaviour:
   - {r: 1, g: 0.8254717, b: 0.8301887, a: 0}
   - {r: 0.8349056, g: 0.83893234, b: 1, a: 0}
   - {r: 1, g: 0.9840802, b: 0.7877358, a: 0}
-  placeholder: {fileID: 257560896}
-  cubes: {fileID: 1912352386}
-  vfx_cube: {fileID: 180128, guid: 6586ff0f14125534cae2f5d8f04b7871, type: 3}
-  cubes_create:
-  - {fileID: 4601721740053448210, guid: 4e134a7ed8d14a1259c1583d1775ef34, type: 3}
-  - {fileID: 9097647133261229898, guid: dc2a840cd0ddbbd3a91ebe59b575b6ed, type: 3}
-  - {fileID: 5302835032871583034, guid: 1ba1e3a3553fa6091843fb64bcc8c8af, type: 3}
-  - {fileID: 8228984469568148161, guid: 1be2cef90825ee9668197aa2419bf59c, type: 3}
-  - {fileID: 613001815798461349, guid: 0150964d607074b8fbbd621ef2d4366d, type: 3}
-  - {fileID: 4838634501960629626, guid: 7c9376f8e446d3128949d10c222eb932, type: 3}
-  - {fileID: 998121119993535774, guid: 4729c35a2d4aef25ba68a56bec44589d, type: 3}
-  - {fileID: 9135738803604648769, guid: 9360f0576e48f1ae19f454e09f5d27e8, type: 3}
-  - {fileID: 3432958427970102637, guid: 4873302f40103703ab86e6f972d7c6b8, type: 3}
-  - {fileID: 2032738628562444566, guid: a87fca1824200dcb1a03409819ed4ced, type: 3}
-  cubes_price: 000000000a000000140000001e00000028000000320000003c000000460000005000000064000000
   start_page:
   - {fileID: 864438239}
   - {fileID: 1164329395}
   - {fileID: 1764070848}
   - {fileID: 1699026727}
+  game_start: 0
   game_over: 0
 --- !u!4 &2089647807
 Transform:
