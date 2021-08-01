@@ -1,18 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+
 public class CanvasButtons : MonoBehaviour {
     [SerializeField] private Sprite sound_on, sound_off;
     private GameObject global_controller;
     private void Start() {
         global_controller = GameObject.Find("GlobalController");
         if (!PlayerPrefs.HasKey("sound")) PlayerPrefs.SetInt("sound", 1);
-        if (PlayerPrefs.GetInt("sound") == 0 && gameObject.name == "Sound") {
-            GetComponent<Image>().sprite = sound_off;
-            global_controller.GetComponent<AudioSource>().Pause();
-            global_controller.GetComponent<Animator>().SetBool("Off", false);
-            global_controller.GetComponent<Animator>().SetBool("On", false);
-        }
+        if (PlayerPrefs.GetInt("sound") == 0) GetComponent<Image>().sprite = sound_off;
     }
     private void Update() {
         if (gameObject.name == "Sound") {

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class DecayCubes : MonoBehaviour {
     [SerializeField] private float camera_speed = 7;
@@ -18,13 +19,21 @@ public class DecayCubes : MonoBehaviour {
                 child.gameObject.GetComponent<Rigidbody>().AddExplosionForce(100f, Vector3.down, 5f);
                 child.SetParent(null);
             }
-            restart_button.SetActive(true);
             Destroy(collision.gameObject);
             collisition_active = true;
             Camera.main.gameObject.AddComponent<CameraShake>();
             GameObject vfx = Instantiate(explosion, new Vector3(collision.contacts[0].point.x, collision.contacts[0].point.y, collision.contacts[0].point.z), Quaternion.identity) as GameObject;
             Destroy(vfx, vfx.gameObject.GetComponent<ParticleSystem>().main.startLifetime.constant);
             if (PlayerPrefs.GetInt("sound") != 0) GetComponent<AudioSource>().Play();
+            StartCoroutine(show_restart_button());
         }
+    }
+    IEnumerator show_restart_button() {
+        yield return new WaitForSeconds(GetComponent<AudioSource>().clip.length);
+        GameObject.Find("GlobalController").GetComponent<AudioSource>().Pause();
+        GameObject.Find("GlobalController").GetComponent<GlobalController>().show_game_over_ad(() => {
+            restart_button.SetActive(true);
+            GameObject.Find("GlobalController").GetComponent<AudioSource>().UnPause();
+        });
     }
 }
