@@ -8,7 +8,7 @@ public class CanvasButtons : MonoBehaviour {
     private void Start() {
         global_controller = GameObject.Find("GlobalController");
         if (!PlayerPrefs.HasKey("sound")) PlayerPrefs.SetInt("sound", 1);
-        if (PlayerPrefs.GetInt("sound") == 0) GetComponent<Image>().sprite = sound_off;
+        if (gameObject.name == "Sound" && PlayerPrefs.GetInt("sound") == 0) GetComponent<Image>().sprite = sound_off;
     }
     private void Update() {
         if (gameObject.name == "Sound") {
@@ -35,7 +35,7 @@ public class CanvasButtons : MonoBehaviour {
         if (PlayerPrefs.GetInt("sound") == 0) {
             GetComponent<AudioSource>().Play();
             PlayerPrefs.SetInt("sound", 1);
-            global_controller.GetComponent<AudioSource>().UnPause();
+            if (!global_controller.GetComponent<AudioSource>().isPlaying) global_controller.GetComponent<AudioSource>().Play();
             global_controller.GetComponent<Animator>().SetBool("Off", false);
             global_controller.GetComponent<Animator>().SetBool("On", true);
         } else {

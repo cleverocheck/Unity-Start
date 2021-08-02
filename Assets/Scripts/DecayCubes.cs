@@ -29,11 +29,14 @@ public class DecayCubes : MonoBehaviour {
         }
     }
     IEnumerator show_restart_button() {
-        yield return new WaitForSeconds(GetComponent<AudioSource>().clip.length);
-        GameObject.Find("GlobalController").GetComponent<AudioSource>().Pause();
-        GameObject.Find("GlobalController").GetComponent<GlobalController>().show_game_over_ad(() => {
-            restart_button.SetActive(true);
-            GameObject.Find("GlobalController").GetComponent<AudioSource>().UnPause();
-        });
+        if (Application.internetReachability == NetworkReachability.NotReachable) restart_button.SetActive(true);
+        else {
+            yield return new WaitForSeconds(GetComponent<AudioSource>().clip.length);
+            GameObject.Find("GlobalController").GetComponent<AudioSource>().Pause();
+            GameObject.Find("GlobalController").GetComponent<GlobalController>().show_game_over_ad(() => {
+                restart_button.SetActive(true);
+                GameObject.Find("GlobalController").GetComponent<AudioSource>().UnPause();
+            });
+        }
     }
 }
