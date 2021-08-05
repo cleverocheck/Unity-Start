@@ -13,7 +13,6 @@ public class GlobalController : MonoBehaviour, IUnityAdsListener {
     // private bool test_mode = false;
     // #endif
     private bool test_mode = true;
-    private bool ad_init = false;
     public delegate void show_game_over_ad_callback();
     private show_game_over_ad_callback ad_game_over_callback;
     public GameObject[] cubes;
@@ -21,15 +20,12 @@ public class GlobalController : MonoBehaviour, IUnityAdsListener {
     private static GlobalController instance = null;
     private void Start() {
         Advertisement.AddListener(this);
-        StartCoroutine(init_ad());
+        Advertisement.Initialize(game_android_id, test_mode);
         if (PlayerPrefs.GetInt("sound") == 0) {
             GetComponent<AudioSource>().Stop();
             GetComponent<Animator>().SetBool("Off", false);
             GetComponent<Animator>().SetBool("On", false);
         }
-    }
-    private void Update() {
-        if (Advertisement.isInitialized && !ad_init) ad_init = true;
     }
     private void Awake() {
         if (instance == null) {
@@ -42,26 +38,26 @@ public class GlobalController : MonoBehaviour, IUnityAdsListener {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
     public void show_game_over_ad(show_game_over_ad_callback callback) {
-        ad_game_over_callback = callback;
         if (Advertisement.IsReady(type_android_game_over)) {
             Advertisement.Show(type_android_game_over);
-        } else if (ad_init) {
-            ad_init = false;
-            StartCoroutine(init_ad());
+            ad_game_over_callback = callback;
+        } else {
+            Advertisement.Initialize(game_android_id, test_mode);
+            callback();
         }
     }
     public void OnUnityAdsReady(string ad_id) { }
     public void OnUnityAdsDidStart(string ad_id) { }
     public void OnUnityAdsDidError(string message) {
-        if (ad_game_over_callback != null) ad_game_over_callback();
+        if (ad_game_over_callback != null) {
+            ad_game_over_callback();
+            ad_game_over_callback = null;
+        }
     }
     public void OnUnityAdsDidFinish(string ad_id, ShowResult result) {
-        if (ad_game_over_callback != null) ad_game_over_callback();
-    }
-    IEnumerator init_ad() {
-        while (!ad_init) {
-            Advertisement.Initialize(game_android_id, test_mode);
-            yield return new WaitForSeconds(0.5f);
+        if (ad_game_over_callback != null) {
+            ad_game_over_callback();
+            ad_game_over_callback = null;
         }
     }
 }
