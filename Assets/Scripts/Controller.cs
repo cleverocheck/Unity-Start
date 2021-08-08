@@ -65,17 +65,17 @@ public class Controller : MonoBehaviour {
     [SerializeField] private float change_speed = 0.5f, difficulty_factor = 0.001f, camera_speed = 2, camera_step = 2.5f, camera_fate_speed = 1.5f;
     [SerializeField] private Color[] colors;
     [SerializeField] private GameObject[] start_page;
-    private GameObject[] cubes_create;
-    private int[] cubes_price;
+    private GameObject[] cubes_create = new GameObject[0]; //  на всякий случай нужно всегда прировнять к пустышке потомучло никогжа не знаеш когда обротятся к полю. и unity рукается на пустые поля 
+    private int[] cubes_price = new int[0];
     public bool game_start = false, game_over = false;
     private Color current_color;
     private CubePosition current_cube = new CubePosition(0, 1, 0);
     private List<Vector3> cubes_positions = new List<Vector3> {
-        new Vector3(),
+        Vector3().zero,
         new Vector3(1, 0, 0),
         new Vector3(-1, 0, 0),
-        new Vector3(0, 1, 0),
-        new Vector3(0, 0, 1),
+        new Vector3.up,
+        new Vector3.forward,
         new Vector3(0, 0, -1),
         new Vector3(1, 0, 1),
         new Vector3(-1, 0, -1),
@@ -84,6 +84,8 @@ public class Controller : MonoBehaviour {
     };
     private float camera_default_y, camera_move_y, camera_move_z;
     private int old_max_hor;
+    private Camera camera;
+    
     private void Start() {
         StartCoroutine(show_cube_placeholder());
         cubes_create = GameObject.Find("GlobalController").GetComponent<GlobalController>().cubes;
@@ -93,6 +95,8 @@ public class Controller : MonoBehaviour {
         camera_move_z = Camera.main.transform.localPosition.z;
         current_color = Camera.main.backgroundColor;
         record_ui.GetComponent<TMPro.TextMeshProUGUI>().text = "<color=#e06055><size=35>BEST: </size></color><u color=#e06055>" + PlayerPrefs.GetInt("record");
+        
+        camera = Camera.main;
     }
     private void Update() {
         if (placeholder != null) {
@@ -129,9 +133,10 @@ public class Controller : MonoBehaviour {
             }
         }
         if (!game_over) {
-            Camera.main.transform.localPosition = Vector3.MoveTowards(Camera.main.transform.localPosition, new Vector3(Camera.main.transform.localPosition.x, camera_move_y, Camera.main.transform.localPosition.z), camera_speed * Time.deltaTime);
-            Camera.main.transform.localPosition = Vector3.MoveTowards(Camera.main.transform.localPosition, new Vector3(Camera.main.transform.localPosition.x, Camera.main.transform.localPosition.y, camera_move_z), camera_speed * Time.deltaTime);
-            if (Camera.main.backgroundColor != current_color) Camera.main.backgroundColor = Color.Lerp(Camera.main.backgroundColor, current_color, Time.deltaTime / camera_fate_speed);
+            // Camera.main в нури это GameObject.FindObjectOfType<Camera>(); тоеть каждый вызов это долгий поиск 
+            camera.transform.localPosition = Vector3.MoveTowards(camera.transform.localPosition, new Vector3(camera.transform.localPosition.x, camera_move_y, camera.transform.localPosition.z), camera_speed * Time.deltaTime);
+            camera.transform.localPosition = Vector3.MoveTowards(camera.transform.localPosition, new Vector3(camera.transform.localPosition.x, camera.transform.localPosition.y, camera_move_z), camera_speed * Time.deltaTime);
+            if (camera.backgroundColor != current_color) Camera.main.backgroundColor = Color.Lerp(camera.backgroundColor, current_color, Time.deltaTime / camera_fate_speed);
         }
     }
     private bool pointer_over_ui() {
@@ -149,6 +154,7 @@ public class Controller : MonoBehaviour {
     }
     private void spawn_placeholder() {
         List<Vector3> positions = new List<Vector3>();
+        // ты серьезно или кудато торопился 
         if (is_position_empty(new Vector3(current_cube.x + 1, current_cube.y, current_cube.z))) positions.Add(new Vector3(current_cube.x + 1, current_cube.y, current_cube.z));
         if (is_position_empty(new Vector3(current_cube.x - 1, current_cube.y, current_cube.z))) positions.Add(new Vector3(current_cube.x - 1, current_cube.y, current_cube.z));
         if (is_position_empty(new Vector3(current_cube.x, current_cube.y + 1, current_cube.z))) positions.Add(new Vector3(current_cube.x, current_cube.y + 1, current_cube.z));
@@ -179,7 +185,7 @@ public class Controller : MonoBehaviour {
         }
         camera_move_y = camera_default_y + current_cube.y - 1;
         if (max.max_hor % 3 == 0 && old_max_hor != max.max_hor) {
-            camera_move_z = (Camera.main.transform.localPosition - new Vector3(0, 0, camera_step)).z;
+            camera_move_z = (camera.transform.localPosition - new Vector3(0, 0, camera_step)).z;
             old_max_hor = max.max_hor;
         }
         if (PlayerPrefs.GetInt("record") < max.MaxY - 1) PlayerPrefs.SetInt("record", max.MaxY - 1);
